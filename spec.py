@@ -1,10 +1,15 @@
 import platform
 import psutil
 import GPUtil
+import cpuinfo
+import platform
 
 def get_system_info():
     # Get CPU information
-    cpu_info = platform.processor()
+    cpu_info = cpuinfo.get_cpu_info()
+    cpu_name = cpu_info['brand_raw']
+    cpu_cores = psutil.cpu_count(logical=False)
+    cpu_threads = psutil.cpu_count(logical=True)
 
     # Get memory (RAM) information
     memory = psutil.virtual_memory()
@@ -24,7 +29,9 @@ def get_system_info():
 
     # Display the information
     print("System Information:")
-    print(f"CPU: {cpu_info}")
+    print(f"CPU: {cpu_name}")
+    print(f"CPU Cores: {cpu_cores}")
+    print(f"CPU Threads: {cpu_threads}")
     print(f"Total Memory (RAM): {total_memory} GB")
     print(f"Used Memory: {used_memory} GB")
     print(f"Available Memory: {available_memory} GB")
