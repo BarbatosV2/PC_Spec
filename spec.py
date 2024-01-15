@@ -2,7 +2,38 @@ import platform
 import psutil
 import GPUtil
 import cpuinfo
-import platform
+
+def get_wifi_info():
+    system_platform = platform.system()
+
+    if system_platform == "Windows":
+        import wmi
+
+        wmi_obj = wmi.WMI()
+        adapters = wmi_obj.Win32_NetworkAdapter()
+        wifi_adapters = [adapter for adapter in adapters if "Wireless" in adapter.Name]
+
+        if wifi_adapters:
+            wifi_info = f"WiFi Adapter: {wifi_adapters[0].Name}"
+        else:
+            wifi_info = "No WiFi adapter found."
+
+    elif system_platform == "Linux":
+        # Note: This assumes you have the 'iwconfig' command available
+        import subprocess
+
+        try:
+            iwconfig_output = subprocess.check_output(["iwconfig"], universal_newlines=True)
+            wifi_adapter_line = next(line for line in iwconfig_output.splitlines() if "IEEE 802.11" in line)
+            wifi_adapter_name = wifi_adapter_line.split(" ")[0]
+            wifi_info = f"WiFi Adapter: {wifi_adapter_name}"
+        except Exception as e:
+            wifi_info = "Error retrieving WiFi information."
+
+    else:
+        wifi_info = "WiFi information not available for this platform."
+
+    return wifi_info
 
 def get_system_info():
     # Get CPU information
@@ -27,6 +58,9 @@ def get_system_info():
     except Exception as e:
         gpu_info = "No NVIDIA GPU found"  # Handle the case where no NVIDIA GPU is present
 
+    # Get WiFi information
+    wifi_info = get_wifi_info()
+
     # Display the information
     print("System Information:")
     print(f"CPU: {cpu_name}")
@@ -37,6 +71,7 @@ def get_system_info():
     print(f"Available Memory: {available_memory} GB")
     print(f"Operating System: {os_info}")
     print(f"GPU: {gpu_info}")
+    print(wifi_info)
 
 if __name__ == "__main__":
     get_system_info()
