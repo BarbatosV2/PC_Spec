@@ -9,6 +9,8 @@ def get_system_info():
     # Get memory (RAM) information
     memory = psutil.virtual_memory()
     total_memory = round(memory.total / (1024 ** 3), 2)  # Convert to GB
+    used_memory = round(memory.used / (1024 ** 3), 2)  # Convert to GB
+    available_memory = round(memory.available / (1024 ** 3), 2)  # Convert to GB
 
     # Get operating system information
     os_info = f"{platform.system()} {platform.release()} {platform.architecture()[0]}"
@@ -24,6 +26,8 @@ def get_system_info():
     print("System Information:")
     print(f"CPU: {cpu_info}")
     print(f"Total Memory (RAM): {total_memory} GB")
+    print(f"Used Memory: {used_memory} GB")
+    print(f"Available Memory: {available_memory} GB")
     print(f"Operating System: {os_info}")
     print(f"GPU: {gpu_info}")
 
